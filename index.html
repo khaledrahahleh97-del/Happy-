@@ -20,6 +20,52 @@
       overflow-x: hidden;
     }
 
+    /* شاشة البدء للالتفاف على قيود Autoplay في المتصفحات */
+    #start-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 220, 232, 0.96);
+      backdrop-filter: blur(12px);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #start-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .start-btn-pulse {
+      background: #b42f61;
+      color: white;
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 900;
+      padding: 20px 40px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(180,47,97,.4);
+      animation: pulse 1.5s infinite;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(180, 47, 97, 0.7); }
+      70% { transform: scale(1.06); box-shadow: 0 0 0 20px rgba(180, 47, 97, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(180, 47, 97, 0); }
+    }
+
     .card {
       width: min(1100px, 94vw);
       min-height: 700px;
@@ -102,6 +148,8 @@
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(180,47,97,.3);
       transition: .2s;
+      position: relative;
+      z-index: 20;
     }
 
     .btn:hover { transform: translateY(-3px) scale(1.03); }
@@ -109,16 +157,26 @@
 
     .heart {
       position: fixed;
-      font-size: 28px;
+      font-size: 32px;
       pointer-events: none;
-      animation: pop 1.7s ease-out forwards;
-      z-index: 10;
+      animation: pop 2s ease-out forwards;
+      z-index: 9999;
+      user-select: none;
     }
 
     @keyframes pop {
-      0% { transform: translateY(0) scale(.4); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: translateY(-180px) rotate(25deg) scale(1.4); opacity: 0; }
+      0% {
+        transform: translateY(0) scale(0.4) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+        transform: translateY(-30px) scale(1.2) rotate(-10deg);
+      }
+      100% {
+        transform: translateY(-250px) scale(1.5) rotate(25deg);
+        opacity: 0;
+      }
     }
 
     .footer {
@@ -129,6 +187,18 @@
   </style>
 </head>
 <body>
+
+  <!-- شاشة الشروع في التشغيل -->
+  <div id="start-overlay" onclick="startExperience(event)">
+    <h2 style="color: #a52e58; font-size: clamp(28px, 5vw, 42px); margin-bottom: 10px;">🎉 مفاجأة عيراني 🎉</h2>
+    <p style="color: #71344d; font-size: 18px;">اضغطي في أي مكان للفتح والتشغيل</p>
+
+    <button class="start-btn-pulse">افتحي الهدية 🎁</button>
+  </div>
+
+  <!-- مشغل الصوت المحلي -->
+  <audio id="audio-player" src="song.mp3" autoplay loop preload="auto"></audio>
+
   <main class="card">
     <div class="confetti">
       <span></span><span></span><span></span><span></span><span></span><span></span>
@@ -142,21 +212,59 @@
       <img src="birthday-card.png" alt="كيكة عيد ميلاد">
     </div>
 
-    <button class="btn" onclick="celebrate()">اضغطي هون 🎁</button>
+    <button class="btn" onclick="celebrate(event)">اضغطي هون 🎁</button>
     <div class="footer">Made with ❤️ specially for عيراني</div>
   </main>
 
   <script>
-    function celebrate() {
-      for (let i = 0; i < 18; i++) {
+    const audio = document.getElementById("audio-player");
+
+    // محاولة التشغيل التلقائي فور تحميل الصفحة
+    window.addEventListener("DOMContentLoaded", () => {
+      if (audio) {
+        audio.play().then(() => {
+          const overlay = document.getElementById("start-overlay");
+          if (overlay) overlay.classList.add("hidden");
+        }).catch(() => {
+          console.log("Autoplay blocked, waiting for click.");
+        });
+      }
+    });
+
+    function startExperience(event) {
+      if (audio) {
+        audio.play().catch(e => console.log(e));
+      }
+      const overlay = document.getElementById("start-overlay");
+      if (overlay) overlay.classList.add("hidden");
+      celebrate(event);
+    }
+
+    function celebrate(event) {
+      if (audio && audio.paused) {
+        audio.play().catch(e => console.log(e));
+      }
+
+      const emojis = ["❤️", "💖", "🎉", "✨", "💕", "🎂", "💗", "🥳", "💓", "💘"];
+      
+      const rect = event && event.target ? event.target.getBoundingClientRect() : null;
+      const startX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+      const startY = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+
+      for (let i = 0; i < 30; i++) {
         const heart = document.createElement("div");
         heart.className = "heart";
-        heart.textContent = ["❤️","💖","🎉","✨","💕"][Math.floor(Math.random()*5)];
-        heart.style.left = (20 + Math.random()*60) + "vw";
-        heart.style.top = (45 + Math.random()*25) + "vh";
-        heart.style.animationDelay = (Math.random() * .5) + "s";
+        heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        const offsetX = (Math.random() - 0.5) * 300;
+        const offsetY = (Math.random() - 0.5) * 50;
+
+        heart.style.left = (startX + offsetX) + "px";
+        heart.style.top = (startY + offsetY) + "px";
+        heart.style.animationDelay = (Math.random() * 0.3) + "s";
+        
         document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 2200);
+        setTimeout(() => heart.remove(), 2300);
       }
     }
   </script>
