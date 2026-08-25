@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عيد ميلاد سعيد عيراني 🎂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Cairo", sans-serif;
+      background: linear-gradient(135deg, #ffdce8, #fff1f6, #ffd4e3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .card {
+      width: min(1100px, 94vw);
+      min-height: 700px;
+      margin: 25px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background: rgba(255,255,255,.45);
+      box-shadow: 0 25px 70px rgba(130, 38, 77, .22);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.7);
+      text-align: center;
+    }
+
+    .confetti span {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      border-radius: 3px;
+      animation: fall 5s linear infinite;
+      opacity: .8;
+    }
+    .confetti span:nth-child(1){left:8%;top:-20px;background:#e84f91;animation-delay:.2s}
+    .confetti span:nth-child(2){left:20%;top:-30px;background:#f4b942;animation-delay:1.3s}
+    .confetti span:nth-child(3){left:38%;top:-25px;background:#b83b70;animation-delay:2s}
+    .confetti span:nth-child(4){left:62%;top:-40px;background:#f16f9e;animation-delay:.7s}
+    .confetti span:nth-child(5){left:79%;top:-30px;background:#e7a62e;animation-delay:1.8s}
+    .confetti span:nth-child(6){left:91%;top:-25px;background:#b83b70;animation-delay:3s}
+
+    @keyframes fall {
+      to { transform: translateY(800px) rotate(300deg); }
+    }
+
+    h1 {
+      margin: 70px 15px 5px;
+      color: #a52e58;
+      font-size: clamp(42px, 7vw, 82px);
+      font-weight: 900;
+      text-shadow: 0 5px 15px rgba(165,46,88,.15);
+    }
+
+    .name {
+      color: #b42f61;
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .message {
+      color: #71344d;
+      font-size: clamp(17px, 2.4vw, 25px);
+      margin: 0 auto 20px;
+      padding: 0 20px;
+    }
+
+    .cake-wrap {
+      position: relative;
+      width: min(820px, 92%);
+      margin: 15px auto 0;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(100,30,55,.18);
+    }
+
+    .cake-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    .btn {
+      margin: 25px auto 35px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 28px;
+      background: #b42f61;
+      color: white;
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(180,47,97,.3);
+      transition: .2s;
+    }
+
+    .btn:hover { transform: translateY(-3px) scale(1.03); }
+    .btn:active { transform: scale(.97); }
+
+    .heart {
+      position: fixed;
+      font-size: 28px;
+      pointer-events: none;
+      animation: pop 1.7s ease-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes pop {
+      0% { transform: translateY(0) scale(.4); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-180px) rotate(25deg) scale(1.4); opacity: 0; }
+    }
+
+    .footer {
+      color: #8b4a62;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="confetti">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <h1>🎉 عيد ميلاد سعيد 🎉</h1>
+    <div class="name">عيراني ❤️</div>
+    <p class="message">كل عام وإنتِ بألف خير، وإن شاء الله تكون سنة حلوة ومليانة فرح وسعادة 🎂✨</p>
+
+    <div class="cake-wrap">
+      <img src="birthday-card.png" alt="كيكة عيد ميلاد">
+    </div>
+
+    <button class="btn" onclick="celebrate()">اضغطي هون 🎁</button>
+    <div class="footer">Made with ❤️ specially for عيراني</div>
+  </main>
+
+  <script>
+    function celebrate() {
+      for (let i = 0; i < 18; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = ["❤️","💖","🎉","✨","💕"][Math.floor(Math.random()*5)];
+        heart.style.left = (20 + Math.random()*60) + "vw";
+        heart.style.top = (45 + Math.random()*25) + "vh";
+        heart.style.animationDelay = (Math.random() * .5) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 2200);
+      }
+    }
+  </script>
+</body>
+</html>
